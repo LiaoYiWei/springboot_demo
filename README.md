@@ -23,7 +23,7 @@ create table `Order`
 **启动程序**  
 `运行com.lyw.springboot_demo.SpringbootDemoApplication.main方法`
 
-##相关链接##
+##相关链接
 **功能api doc**  
 <http://localhost:8080/swagger-ui.html>  
 **监控doc**  
