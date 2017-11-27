@@ -29,7 +29,7 @@ public class Swagger2 {
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                  .title("platform API")
+                  .title("Order API")
                 .description("")
                 .termsOfServiceUrl("")
                 .contact("wesley")

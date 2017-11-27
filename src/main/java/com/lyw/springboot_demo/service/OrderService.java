@@ -2,6 +2,7 @@ package com.lyw.springboot_demo.service;
 
 import com.lyw.springboot_demo.domain.Order;
 import com.lyw.springboot_demo.rpt.OrderMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,12 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderService {
 
+    @Autowired
     OrderMapper orderMapper;
 
     @Transactional
-    public void placeOrder(Order order) {
+    public Order placeOrder(Order order) {
         addOrder(order);
         Pay();
+        return order;
     }
 
     private void Pay() {
