@@ -8,8 +8,9 @@ https://www.docker.com/get-docker
 ```  
 docker run -v ~/data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root  -p 3306:3306 -e "TZ=Asia/Shanghai" -d --name=mysql mysql:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci  --skip-grant-tables
 ```
-**创建Database**  
-
+**用户名密码**  
+root/root  
+**创建Database** 
 ```CREATE SCHEMA springboot;```
 ```
 create table `Order`
