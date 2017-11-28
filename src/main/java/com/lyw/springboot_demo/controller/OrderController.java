@@ -1,11 +1,11 @@
 package com.lyw.springboot_demo.controller;
 
+import com.lyw.springboot_demo.common.OrderEditor;
 import com.lyw.springboot_demo.domain.Order;
-import com.lyw.springboot_demo.service.IOrderService;
-import io.swagger.annotations.Api;
+import com.lyw.springboot_demo.facade.IOrderFacade;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -13,34 +13,37 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author liaoyiwei
  */
-@Api(value = "订单相关api")
-@Controller
-@RequestMapping("/order")
+//@Api(value = "订单相关api")
+//@Controller
+//@RequestMapping("/order")
 public class OrderController {
 
     @Autowired
-    IOrderService orderService;
+    IOrderFacade orderService;
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Order.class, new OrderEditor());
+    }
 
     @ApiOperation(value = "创建订单")
-    @RequestMapping(method = RequestMethod.PUT)
+    @PostMapping
     public @ResponseBody
     Order addOrder(@RequestBody Order order) {
         return orderService.placeOrder(order);
     }
 
     @ApiOperation(value = "查询订单")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public @ResponseBody
     Order queryOrder(@PathVariable("id") Long id) {
         return orderService.query(id);
     }
 
-
     @ApiOperation(value = "创建订单")
-    @RequestMapping(value = "/acceptMultiBean", method = RequestMethod.POST)
+    @PostMapping("/acceptMultiBean")
     public @ResponseBody
-    void acceptMultiBean(@RequestAttribute("order") Order order, @RequestAttribute("order1") Order order1) {
+    void acceptMultiBean(@RequestParam("order") Order order, @RequestParam("order1") Order order1) {
         System.out.println(order);
         System.out.println(order1);
     }

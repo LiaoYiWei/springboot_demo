@@ -1,14 +1,13 @@
-package com.lyw.springboot_demo.service;
+package com.lyw.springboot_demo.facade;
 
 import com.lyw.springboot_demo.domain.Order;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>注释</p>
  *
  * @author liaoyiwei
  */
-public interface IOrderService {
+public interface IOrderFacade {
 
     Order placeOrder(Order order);
 

@@ -6,6 +6,6 @@
     <dubbo:application name="demo-provider"/>
     <dubbo:registry address="zookeeper://127.0.0.1:2181" />
     <dubbo:protocol name="dubbo" port="20880"/>
-    <dubbo:service interface="com.lyw.springboot_demo.service.IOrderService" ref="orderService"/>
-    <bean id="orderService" class="com.lyw.springboot_demo.service.OrderService"/>
+    <dubbo:service interface="com.lyw.springboot_demo.facade.IOrderFacade" ref="orderFacade"/>
+    <bean id="orderFacade" class="com.lyw.springboot_demo.facade.OrderFacade"/>
 </beans>

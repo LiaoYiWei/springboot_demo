@@ -1,4 +1,4 @@
-package com.lyw.springboot_demo.service;
+package com.lyw.springboot_demo.facade;
 
 import com.lyw.springboot_demo.domain.Order;
 import org.junit.Test;
@@ -18,11 +18,11 @@ import javax.annotation.Resource;
 public class OrderServiceTest {
 
     @Resource
-    IOrderService orderServiceClient;
+    IOrderFacade orderFacadeClient;
 
     @Test
     public void dubboClientTest() {
-        Order query = orderServiceClient.query(1L);
+        Order query = orderFacadeClient.query(1L);
         System.out.println(query);
     }
 }
