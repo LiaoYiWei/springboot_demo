@@ -11,12 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author liaoyiwei
  */
-@Service
-public class OrderService {
+//@Service
+public class OrderService implements IOrderService {
 
     @Autowired
     OrderMapper orderMapper;
 
+    @Override
     @Transactional
     public Order placeOrder(Order order) {
         addOrder(order);
@@ -34,6 +35,7 @@ public class OrderService {
         orderMapper.insertOrder(order);
     }
 
+    @Override
     public Order query(Long id) {
         return orderMapper.select(id);
     }

@@ -1,7 +1,7 @@
 package com.lyw.springboot_demo.controller;
 
 import com.lyw.springboot_demo.domain.Order;
-import com.lyw.springboot_demo.service.OrderService;
+import com.lyw.springboot_demo.service.IOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     @Autowired
-    OrderService orderService;
+    IOrderService orderService;
 
 
     @ApiOperation(value = "创建订单")
@@ -34,6 +34,15 @@ public class OrderController {
     public @ResponseBody
     Order queryOrder(@PathVariable("id") Long id) {
         return orderService.query(id);
+    }
+
+
+    @ApiOperation(value = "创建订单")
+    @RequestMapping(value = "/acceptMultiBean", method = RequestMethod.POST)
+    public @ResponseBody
+    void acceptMultiBean(@RequestAttribute("order") Order order, @RequestAttribute("order1") Order order1) {
+        System.out.println(order);
+        System.out.println(order1);
     }
 
 }

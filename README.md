@@ -21,6 +21,11 @@ create table `Order`
 	price varchar(50) null
 );
 ```
+**启动zookeeper**
+```
+docker run --name=zookeeper -p 2818:2181 -p 2888:2888 -p 3888:3888 -d zookeeper:latest
+```
+
 **启动程序**  
 `运行com.lyw.springboot_demo.SpringbootDemoApplication.main方法`    
 
