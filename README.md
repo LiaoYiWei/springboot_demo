@@ -192,7 +192,7 @@ SpringApplication的run方法的主要流程大体可以归纳如下：
 13. 正常情况下，遍历执行SpringApplicationRunListener的finished()方法、（如果整个过程出现异常，则依然调用所有SpringApplicationRunListener的finished()方法，只不过这种情况下会将异常信息一并传入处理）
 
 去除事件通知点后，整个流程如下：
-![Springboot-1](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-3.png)
+![Springboot-3](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-3.jpg)
 
 
 
