@@ -95,7 +95,7 @@ public class Application {
 每次写这3个比较累，所以写一个@SpringBootApplication方便点。接下来分别介绍这3个Annotation。
 ### @Configuration
 这里的@Configuration对我们来说不陌生，它就是JavaConfig形式的Spring Ioc容器的配置类使用的那个@Configuration，SpringBoot社区推荐使用基于JavaConfig的配置形式，所以，这里的启动类标注了@Configuration之后，本身其实也是一个IoC容器的配置类。
-举几个简单例子回顾下，XML跟config配置方式的区别：
+举几个例子回顾下，XML跟config配置方式的区别：
 基于XML的配置形式是这样:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -148,7 +148,7 @@ public @interface EnableAutoConfiguration {
 }
 ```
 其中，最关键的要属@Import(EnableAutoConfigurationImportSelector.class)，借助EnableAutoConfigurationImportSelector，@EnableAutoConfiguration可以帮助SpringBoot应用将所有符合条件的@Configuration配置都加载到当前SpringBoot创建并使用的IoC容器。就像一只“八爪鱼”一样    
-借助于Spring框架原有的一个工具类：SpringFactoriesLoader的支持，@EnableAutoConfiguration可以智能的自动配置功效才得以大功告成！
+借助于Spring框架原有的一个工具类：SpringFactoriesLoader的支持，@EnableAutoConfiguration可以智能的自动配置功效才得以大功告成！  
 ![Springboot-1](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-1.png)
 
 ### SpringFactoriesLoader详解
