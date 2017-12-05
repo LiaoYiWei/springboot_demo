@@ -167,7 +167,7 @@ public abstract class SpringFactoriesLoader {
 }
 ```
 配合@EnableAutoConfiguration使用的话，它更多是提供一种配置查找的功能支持，即根据@EnableAutoConfiguration的完整类名org.springframework.boot.autoconfigure.EnableAutoConfiguration作为查找的Key,获取对应的一组@Configuration类
-![springboot-2](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-2.png)
+![springboot-2](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-2.jpg)
 上图就是从SpringBoot的autoconfigure依赖包中的META-INF/spring.factories配置文件中摘录的一段内容，可以很好地说明问题。  
 所以，@EnableAutoConfiguration自动配置的魔法骑士就变成了：从classpath中搜寻所有的META-INF/spring.factories配置文件，并将其中org.springframework.boot.autoconfigure.EnableutoConfiguration对应的配置项通过反射（Java Refletion）实例化为对应的标注了@Configuration的JavaConfig形式的IoC容器配置类，然后汇总为一个并加载到IoC容器。
 
