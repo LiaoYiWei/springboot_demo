@@ -1,4 +1,41 @@
 # spring boot demo
+## 启动程序
+**安装docker**  
+https://www.docker.com/get-docker
+
+**启动mysql容器**
+```  
+docker run -v ~/data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root  -p 3306:3306 -e "TZ=Asia/Shanghai" -d --name=mysql mysql:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci  --skip-grant-tables
+```
+**用户名密码**  
+root/root  
+**创建Database** 
+```CREATE SCHEMA springboot;```
+```
+create table `Order`
+(
+	id bigint not null
+		primary key,
+	status varchar(50) null,
+	price varchar(50) null
+);
+```
+**启动zookeeper**
+```
+docker run --name=zookeeper -p 2818:2181 -p 2888:2888 -p 3888:3888 -d zookeeper:latest
+```
+
+**启动程序**  
+`运行com.lyw.springboot_demo.SpringbootDemoApplication.main方法`    
+
+## 相关链接
+**功能api doc**  
+<http://localhost:8080/swagger-ui.html>  
+**监控doc**  
+<http://localhost:8080/docs/>  
+**监控地址HAL browser**  
+<http://localhost:8080/actuator/browser.html#/actuator>
+
 ## spring boot介绍
 * Spring Boot简化了基于Spring的应用开发，你只需要"run"就能创建一个独立的，产品级别的Spring应用。 Spring Boo为Spring平台及第三方库提供开箱即用的设置，这样你就可以有条不紊地开始。多数Spring Boot应用只需要很少的Spring配置。
 * 你可以使用Spring Boot创建Java应用，并使用java -jar启动它或采用传统的war部署方式。Spring Boot也提供了一个运行"spring脚本"的命令行工具。
@@ -37,7 +74,7 @@ public class Application {
         @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
         @Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
 public @interface SpringBootApplication {
-
+    ...
 }
 ```
 虽然定义使用了多个Annotation进行了原信息标注，但实际上重要的只有三个Annotation：
@@ -107,55 +144,56 @@ public class MockConfiguration{
 @AutoConfigurationPackage
 @Import(EnableAutoConfigurationImportSelector.class)
 public @interface EnableAutoConfiguration {
-    
+    ...
 }
 ```
 其中，最关键的要属@Import(EnableAutoConfigurationImportSelector.class)，借助EnableAutoConfigurationImportSelector，@EnableAutoConfiguration可以帮助SpringBoot应用将所有符合条件的@Configuration配置都加载到当前SpringBoot创建并使用的IoC容器。就像一只“八爪鱼”一样    
 借助于Spring框架原有的一个工具类：SpringFactoriesLoader的支持，@EnableAutoConfiguration可以智能的自动配置功效才得以大功告成！
+![Springboot-1](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-1.png)
+
+### SpringFactoriesLoader详解
+SpringFactoriesLoader属于Spring框架私有的一种扩展方案，其主要功能就是从指定的配置文件META-INF/spring.factories加载配置。
+```java
+public abstract class SpringFactoriesLoader {
+    //...
+    public static <T> List<T> loadFactories(Class<T> factoryClass, ClassLoader classLoader) {
+        ...
+    }
 
 
-
-
-
-
- 
-
-## 启动程序
-**安装docker**  
-https://www.docker.com/get-docker
-
-**启动mysql容器**
-```  
-docker run -v ~/data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root  -p 3306:3306 -e "TZ=Asia/Shanghai" -d --name=mysql mysql:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci  --skip-grant-tables
+    public static List<String> loadFactoryNames(Class<?> factoryClass, ClassLoader classLoader) {
+        ....
+    }
+}
 ```
-**用户名密码**  
-root/root  
-**创建Database** 
-```CREATE SCHEMA springboot;```
-```
-create table `Order`
-(
-	id bigint not null
-		primary key,
-	status varchar(50) null,
-	price varchar(50) null
-);
-```
-**启动zookeeper**
-```
-docker run --name=zookeeper -p 2818:2181 -p 2888:2888 -p 3888:3888 -d zookeeper:latest
-```
+配合@EnableAutoConfiguration使用的话，它更多是提供一种配置查找的功能支持，即根据@EnableAutoConfiguration的完整类名org.springframework.boot.autoconfigure.EnableAutoConfiguration作为查找的Key,获取对应的一组@Configuration类
+![springboot-2](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-2.png)
+上图就是从SpringBoot的autoconfigure依赖包中的META-INF/spring.factories配置文件中摘录的一段内容，可以很好地说明问题。  
+所以，@EnableAutoConfiguration自动配置的魔法骑士就变成了：从classpath中搜寻所有的META-INF/spring.factories配置文件，并将其中org.springframework.boot.autoconfigure.EnableutoConfiguration对应的配置项通过反射（Java Refletion）实例化为对应的标注了@Configuration的JavaConfig形式的IoC容器配置类，然后汇总为一个并加载到IoC容器。
 
-**启动程序**  
-`运行com.lyw.springboot_demo.SpringbootDemoApplication.main方法`    
+### 深入探索SpringApplication执行流程
+SpringApplication的run方法的主要流程大体可以归纳如下：
+1. 如果我们使用的是SpringApplication的静态run方法，那么，这个方法里面首先要创建一个SpringApplication对象实例，然后调用这个创建好的SpringApplication的实例方法。在SpringApplication实例初始化的时候，它会提前做几件事情：
+    * 根据classpath里面是否存在某个特征类（org.springframework.web.context.ConfigurableWebApplicationContext）来决定是否应该创建一个为Web应用使用的ApplicationContext类型。
+    * 使用SpringFactoriesLoader在应用的classpath中查找并加载所有可用的ApplicationContextInitializer
+    * 使用SpringFactoriesLoader在应用的classpath中查找并加载所有可用的ApplicationListener。
+    * 推断并设置main方法的定义类。
+2. SpringApplication实例初始化完成并且完成设置后，就开始执行run方法的逻辑了，方法执行伊始，首先遍历执行所有通过SpringFactoriesLoader可以查找到并加载的SpringApplicationRunListener。调用它们的started()方法。
+3. 创建并配置当前Spring Boot应用将要使用的Environment（包括配置要使用的PropertySource以及Profile）。
+4. 遍历调用所有SpringApplicationRunListener的environmentPrepared()的方法。
+5. 如果SpringApplication的showBanner属性被设置为true，则打印banner。
+6. 根据用户是否明确设置了applicationContextClass类型以及初始化阶段的推断结果，决定该为当前SpringBoot应用创建什么类型的ApplicationContext并创建完成，然后根据条件决定是否添加ShutdownHook，决定是否使用自定义的BeanNameGenerator，决定是否使用自定义的ResourceLoader，当然，最重要的，将之前准备好的Environment设置给创建好的ApplicationContext使用。
+7. ApplicationContext创建好之后，SpringApplication会再次借助Spring-FactoriesLoader，查找并加载classpath中所有可用的ApplicationContext-Initializer，然后遍历调用这些ApplicationContextInitializer的initialize（applicationContext）方法来对已经创建好的ApplicationContext进行进一步的处理。
+8. 遍历调用所有SpringApplicationRunListener的contextPrepared()方法。
+9. 最核心的一步，将之前通过@EnableAutoConfiguration获取的所有配置以及其他形式的IoC容器配置加载到已经准备完毕的ApplicationContext。
+10. 遍历调用所有SpringApplicationRunListener的contextLoaded()方法。
+11. 调用ApplicationContext的refresh()方法，完成IoC容器可用的最后一道工序。
+12. 查找当前ApplicationContext中是否注册有CommandLineRunner，如果有，则遍历执行它们。
+13. 正常情况下，遍历执行SpringApplicationRunListener的finished()方法、（如果整个过程出现异常，则依然调用所有SpringApplicationRunListener的finished()方法，只不过这种情况下会将异常信息一并传入处理）
 
-## 相关链接
-**功能api doc**  
-<http://localhost:8080/swagger-ui.html>  
-**监控doc**  
-<http://localhost:8080/docs/>  
-**监控地址HAL browser**  
-<http://localhost:8080/actuator/browser.html#/actuator>
+去除事件通知点后，整个流程如下：
+![Springboot-1](https://raw.githubusercontent.com/LiaoYiWei/springboot_demo/master/doc/springboot3-3.png)
+
 
 
 
