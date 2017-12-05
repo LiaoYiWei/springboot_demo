@@ -1,6 +1,5 @@
 package com.lyw.springboot_demo.common;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lyw.springboot_demo.domain.Order;
 
