@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author liaoyiwei
  */
-@Api(value = "订单相关api")
+@Api(value = "订单相关api_test")
 @Controller
 @RequestMapping("/order")
 public class OrderFacade implements IOrderFacade {
@@ -22,7 +22,7 @@ public class OrderFacade implements IOrderFacade {
     @Autowired
     IOrderFacade orderFacade;
 
-    @ApiOperation(value = "创建订单")
+    @ApiOperation(value = "创建订单+++")
     @PostMapping
     @Override
     public @ResponseBody
