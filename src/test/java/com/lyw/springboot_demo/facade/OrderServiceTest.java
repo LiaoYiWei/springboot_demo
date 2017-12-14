@@ -23,6 +23,6 @@ public class OrderServiceTest {
     @Test
     public void dubboClientTest() {
         Order query = orderFacadeClient.query(1L);
-        System.out.println(query);
+        System.out.println("-------" + query + "-------");
     }
 }
